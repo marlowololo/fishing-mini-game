@@ -10,8 +10,10 @@ public class PlayerUIController : MonoBehaviour {
 
     public void ShowFishingCastingMeter(Vector3 uiRefPosition) {
         Vector3 screenPosition = Camera.main.WorldToScreenPoint(uiRefPosition);
+        Vector3 targetPosition = _fishingCastMeter.transform.position;
+        targetPosition.y = screenPosition.y;
         _fishingCastMeter.gameObject.SetActive(true);
-        _fishingCastMeter.transform.position = screenPosition;
+        _fishingCastMeter.transform.position = targetPosition;
     }
 
     public void SetFishingCastingMeterValue(float value) {

@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Fish : MonoBehaviour {
 
+    [Header("References")]
+    [SerializeField] private Animator _fishAnimator;
+
+    [Header("Settings")]
     [SerializeField] private float _chasingTime = 3f;
 
     private Bait _bait;
@@ -24,6 +28,7 @@ public class Fish : MonoBehaviour {
     }
 
     public void ChaseBait(Bait bait) {
+        _fishAnimator.speed = 1;
         _bait = bait;
         _bait.Fish = this;
         _startingPosition = transform.position;
@@ -32,6 +37,10 @@ public class Fish : MonoBehaviour {
         _startChasing = true;
         _currentChaseTime = 0f;
         transform.LookAt(_bait.transform.position);
+    }
+
+    public void GetCaught(){
+        _fishAnimator.speed = 10;
     }
 
     public void OnBaitPulled(){

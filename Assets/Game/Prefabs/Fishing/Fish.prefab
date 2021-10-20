@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3934877231280194842}
   - component: {fileID: 8385818438302679530}
   - component: {fileID: 6567967765777431049}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Fish
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48f88a441e552ba47952528cf5c43202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _fishAnimator: {fileID: 5187855751932142757}
   _chasingTime: 3
 --- !u!54 &8385818438302679530
 Rigidbody:
@@ -102,6 +103,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2083318752096192287}
     m_Modifications:
+    - target: {fileID: -8826661677712140649, guid: f3d3ddb7b17d8ba4ea37bc590afa1b0d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f3d3ddb7b17d8ba4ea37bc590afa1b0d,
         type: 3}
       propertyPath: m_RootOrder
@@ -172,15 +178,75 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8401423452631372418, guid: f3d3ddb7b17d8ba4ea37bc590afa1b0d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -7357345352523149320, guid: f3d3ddb7b17d8ba4ea37bc590afa1b0d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: -7357345352523149320, guid: f3d3ddb7b17d8ba4ea37bc590afa1b0d,
         type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -6037970196745834450, guid: f3d3ddb7b17d8ba4ea37bc590afa1b0d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -3636436298275846896, guid: f3d3ddb7b17d8ba4ea37bc590afa1b0d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -2185984342914321506, guid: f3d3ddb7b17d8ba4ea37bc590afa1b0d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -2065847602878943426, guid: f3d3ddb7b17d8ba4ea37bc590afa1b0d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -1104751823927148627, guid: f3d3ddb7b17d8ba4ea37bc590afa1b0d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f3d3ddb7b17d8ba4ea37bc590afa1b0d,
         type: 3}
       propertyPath: m_Name
       value: Fish
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f3d3ddb7b17d8ba4ea37bc590afa1b0d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6195280119653981719, guid: f3d3ddb7b17d8ba4ea37bc590afa1b0d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 6977003697723129457, guid: f3d3ddb7b17d8ba4ea37bc590afa1b0d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7684101509903779712, guid: f3d3ddb7b17d8ba4ea37bc590afa1b0d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 9157551422078213679, guid: f3d3ddb7b17d8ba4ea37bc590afa1b0d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f3d3ddb7b17d8ba4ea37bc590afa1b0d, type: 3}

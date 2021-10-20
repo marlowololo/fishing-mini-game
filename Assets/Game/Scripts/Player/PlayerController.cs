@@ -15,11 +15,14 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private GameObject _playerMesh;
     [SerializeField] private Animator _playerAnimator;
     [SerializeField] private Rigidbody _playerRigidbody;
+    [SerializeField] private PlayerCameraController _playerCamera;
 
-    [Header("Locatios References")]
+
+    [Header("Locations References")]
     [SerializeField] private Transform _fishingMeterUIRef;
     [SerializeField] private GameObject _raycastOriginRef;
     [SerializeField] private GameObject _baitCastPositionRef;
+    [SerializeField] private GameObject _fishCatchPositionRef;
 
     [Header("Prefabs")]
     [SerializeField] private Bait _baitPrefabs;
@@ -30,6 +33,7 @@ public class PlayerController : MonoBehaviour {
     private int _throwRodStateID;
     private int _pullFishStateID;
     private int _baitTakenStateID;
+    private int _catchFishID;
 
     //movement
     private Vector3 _movementVector = Vector3.zero;
@@ -39,8 +43,14 @@ public class PlayerController : MonoBehaviour {
     private bool _isCastingFishingRod;
     private bool _castThrown;
     private bool _isFishing;
+    private bool _lerpFishPosition;
     private float _fishingCastHoldTime;
     private Bait _bait;
+
+    //fishing catch lerp
+    private Quaternion _fishRotation = Quaternion.Euler(0,90,0);
+    private Vector3 _fishFirstPosition;
+    private float _fishCatchLerpTime;
 
     private void Start() {
         //animation id
@@ -49,6 +59,7 @@ public class PlayerController : MonoBehaviour {
         _throwRodStateID = Animator.StringToHash("ThrowRod");
         _pullFishStateID = Animator.StringToHash("PullFish");
         _baitTakenStateID = Animator.StringToHash("BaitTaken");
+        _catchFishID = Animator.StringToHash("CatchFish");
 
         //object instance
         _bait = Instantiate<Bait>(_baitPrefabs);
@@ -96,6 +107,10 @@ public class PlayerController : MonoBehaviour {
         if (_isFishing) {
             Fishing();
         }
+
+        if (_lerpFishPosition){
+            LerpFishPositionOnCatch();
+        }
     }
 
     private void TryCastFishing() {
@@ -109,8 +124,10 @@ public class PlayerController : MonoBehaviour {
                 _isCastingFishingRod = true;
                 _isFishing = false;
                 _castThrown = false;
+                _lerpFishPosition = false;
 
                 _playerAnimator.SetBool(_pullFishStateID, false);
+                _playerAnimator.SetBool(_catchFishID, false);
                 _playerAnimator.SetBool(_castRodStateID, true);
                 _playerUIController.ShowFishingCastingMeter(_fishingMeterUIRef.position);
                 _playerUIController.SetFishingCastingMeterValue(0);
@@ -138,6 +155,8 @@ public class PlayerController : MonoBehaviour {
             StartCoroutine(
                 WaitBaitCasting(throwPower)
             );
+
+            _playerCamera.EnabeFishingCamera(_playerMesh.transform.forward.normalized);
         }
 
         IEnumerator WaitBaitCasting(float fishingThrowPower) {
@@ -159,17 +178,20 @@ public class PlayerController : MonoBehaviour {
             _playerAnimator.SetBool(_baitTakenStateID, false);
             _playerAnimator.SetBool(_pullFishStateID, true);
 
-            StartCoroutine(WaitForFishingAnimation());
             _playerUIController.HideBaitIndicator();
+
+            _playerCamera.DisableFishingCamera();
+
             if (_bait.IsBaitTaken) {
                 PullFish();
             } else {
                 _bait.Pull();
+                StartCoroutine(WaitForPullAnimation());
             }
         }
 
-        IEnumerator WaitForFishingAnimation() {
-            yield return new WaitForSeconds(1.55f);
+        IEnumerator WaitForPullAnimation() {
+            yield return new WaitForSeconds(1.25f);
             _isFishing = false;
         }
 
@@ -181,11 +203,46 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void PullFish() {
-        var fish = _bait.Fish.GetComponent<Rigidbody>();
+        //pardon the hardcoded
+        float defaultFishDistance = 3.971839f; //calculated manually
+        float defaultPullForce = 150;
+
+        _bait.Fish.GetCaught();
+
+        Rigidbody fish = _bait.Fish.GetComponent<Rigidbody>();
         Vector3 pullDirection = (transform.position - _bait.Fish.transform.position).normalized;
         fish.AddForce(Vector3.up * 350);
-        fish.AddForce(pullDirection * 150);
-        //maxheight = 2.45f
+        
+        float fishDistance = Vector3.Distance(fish.transform.position, transform.position);
+        float finalForcePower =  defaultPullForce *  fishDistance / defaultFishDistance;
+        fish.AddForce(pullDirection * finalForcePower);
+        
+        _playerAnimator.SetBool(_catchFishID, true);
+
+        StartCoroutine(CatchAnimationSequence());
+
+        IEnumerator CatchAnimationSequence() {
+            yield return new WaitForSeconds(1f);
+            _lerpFishPosition = true;
+            fish.velocity = Vector3.zero;
+            fish.useGravity = false;
+            fish.constraints = RigidbodyConstraints.FreezePosition;
+
+            _fishFirstPosition = fish.transform.position;
+            _fishCatchLerpTime = 0;
+
+            yield return new WaitForSeconds(1.0f);
+            _isFishing = false;
+            _lerpFishPosition = false;
+            Destroy(fish.gameObject);
+        }
+    }
+
+    private void LerpFishPositionOnCatch(){
+        _fishCatchLerpTime += Time.deltaTime;
+        Transform fishTransform = _bait.Fish.transform;
+        fishTransform.position = Vector3.Lerp(_fishFirstPosition, _fishCatchPositionRef.transform.position, _fishCatchLerpTime/0.25f);
+        fishTransform.rotation = _playerMesh.transform.rotation *  Quaternion.Lerp(fishTransform.rotation, _fishRotation, _fishCatchLerpTime/0.25f);
     }
 
 }
