@@ -1045,7 +1045,7 @@ GameObject:
   - component: {fileID: 1009437120}
   - component: {fileID: 1009437119}
   - component: {fileID: 1009437118}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1479,7 +1479,7 @@ Transform:
   m_GameObject: {fileID: 1546830960}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.5, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_Children: []
   m_Father: {fileID: 301300850}
   m_RootOrder: 1
@@ -1827,41 +1827,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2004198633126800533, guid: 37dedeac1bd414a428b1209d88730118,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2004198633126800533, guid: 37dedeac1bd414a428b1209d88730118,
-        type: 3}
-      propertyPath: m_Parameters.textureMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2004198633126800533, guid: 37dedeac1bd414a428b1209d88730118,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: ba49986e6a1418244b663040f1e3fd23, type: 2}
-    - target: {fileID: 2004198633126800533, guid: 37dedeac1bd414a428b1209d88730118,
-        type: 3}
-      propertyPath: m_Positions.Array.data[0].y
-      value: 2.22
-      objectReference: {fileID: 0}
-    - target: {fileID: 2004198633126800533, guid: 37dedeac1bd414a428b1209d88730118,
-        type: 3}
-      propertyPath: m_Positions.Array.data[1].x
-      value: 2.16
-      objectReference: {fileID: 0}
-    - target: {fileID: 2004198633126800533, guid: 37dedeac1bd414a428b1209d88730118,
-        type: 3}
-      propertyPath: m_Parameters.widthMultiplier
-      value: 0.01
-      objectReference: {fileID: 0}
-    - target: {fileID: 2004198633126800533, guid: 37dedeac1bd414a428b1209d88730118,
-        type: 3}
-      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2004198633506999848, guid: 37dedeac1bd414a428b1209d88730118,
         type: 3}
       propertyPath: m_Name
@@ -1877,11 +1842,6 @@ PrefabInstance:
       propertyPath: _playerUIController
       value: 
       objectReference: {fileID: 1229424139}
-    - target: {fileID: 2004198633506999850, guid: 37dedeac1bd414a428b1209d88730118,
-        type: 3}
-      propertyPath: _maximumFishingPower
-      value: 220
-      objectReference: {fileID: 0}
     - target: {fileID: 2004198633506999851, guid: 37dedeac1bd414a428b1209d88730118,
         type: 3}
       propertyPath: m_RootOrder

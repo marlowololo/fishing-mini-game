@@ -8,6 +8,9 @@ public class Fish : MonoBehaviour {
     [SerializeField] private Animator _fishAnimator;
     [SerializeField] private Transform _fishHookPosRef;
     [SerializeField] private ParticleSystem _fishSplashVFX;
+    [SerializeField] private AudioSource _fishAudioSource;
+    [SerializeField] private AudioClip _fishSwimAudioClip;
+    [SerializeField] private AudioClip _fishCaughtAudioClip;
 
     [Header("Settings")]
     [SerializeField] private float _chasingTime = 3f;
@@ -56,6 +59,8 @@ public class Fish : MonoBehaviour {
     }
 
     private void ChangeSwimDirection() {
+        _fishAudioSource.clip = _fishSwimAudioClip;
+        _fishAudioSource.Play();
         transform.LookAt(transform.position + _baitThrowDirection);
         transform.Rotate(0f, Random.Range(-30f, 30f), 0f);
     }
@@ -79,7 +84,10 @@ public class Fish : MonoBehaviour {
     }
 
     public void GetCaught() {
+        _strike = false;
         _fishAnimator.speed = 10;
+        _fishAudioSource.clip = _fishCaughtAudioClip;
+        _fishAudioSource.Play();
         _fishSplashVFX.gameObject.SetActive(false);
     }
 

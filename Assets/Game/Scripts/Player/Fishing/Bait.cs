@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Bait : MonoBehaviour {
+    [Header("References")]
     [SerializeField] Rigidbody _rigidBody;
     [SerializeField] GameObject _baitMesh;
     [SerializeField] ParticleSystem _baitInParticle;
     [SerializeField] ParticleSystem _baitIdleParticle;
+    [SerializeField] AudioSource _baitAudioSource;
 
     public Fish Fish;
 
@@ -76,7 +78,7 @@ public class Bait : MonoBehaviour {
         _baitInParticle.gameObject.SetActive(false);
         _baitIdleParticle.gameObject.SetActive(false);
         gameObject.SetActive(false);
-        
+
         _contactWithWater = false;
         _onBaitPulled?.Invoke();
         _onBaitPulled = null;
@@ -92,6 +94,7 @@ public class Bait : MonoBehaviour {
             _contactWithWater = true;
             _baitInParticle.gameObject.SetActive(true);
             _baitIdleParticle.gameObject.SetActive(true);
+            _baitAudioSource.Play();
         }
     }
 

@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private Rigidbody _playerRigidbody;
     [SerializeField] private PlayerCameraController _playerCamera;
     [SerializeField] private FishingLine _fishingLine;
+    [SerializeField] private AudioSource _holdCastAudioSource;
+    [SerializeField] private AudioSource _fishingRodAudioSource;
+    [SerializeField] private AudioSource _newItemAudioSource;
 
 
     [Header("Locations References")]
@@ -128,6 +131,8 @@ public class PlayerController : MonoBehaviour {
                 _castThrown = false;
                 _lerpFishPosition = false;
 
+                _holdCastAudioSource.Play();
+
                 _playerAnimator.SetBool(_pullFishStateID, false);
                 _playerAnimator.SetBool(_catchFishID, false);
                 _playerAnimator.SetBool(_castRodStateID, true);
@@ -139,14 +144,19 @@ public class PlayerController : MonoBehaviour {
 
     private void CastFishingRod() {
         _fishingCastHoldTime += Time.deltaTime;
+        if (_fishingCastHoldTime > _fishingCastHoldTimeLimit) {
+            _fishingCastHoldTime = _fishingCastHoldTimeLimit;
+        }
+
+        _holdCastAudioSource.pitch = 0.5f + (_fishingCastHoldTime / _fishingCastHoldTimeLimit);
         _playerUIController.SetFishingCastingMeterValue(_fishingCastHoldTime / _fishingCastHoldTimeLimit);
+
         if (Input.GetButtonUp("Fire1") && !_castThrown) {
             _castThrown = true;
             _fishingRodPulled = false;
+            _fishingRodAudioSource.Play();
+            _holdCastAudioSource.Stop();
 
-            if (_fishingCastHoldTime > _fishingCastHoldTimeLimit) {
-                _fishingCastHoldTime = _fishingCastHoldTimeLimit;
-            }
 
             _playerUIController.HideFishingCastingMeter();
 
@@ -182,6 +192,12 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    private void OnBaitTaken() {
+        _playerAnimator.SetBool(_baitTakenStateID, true);
+        _playerUIController.OnBaitTaken(_raycastOriginRef.transform.position);
+        _fishingLine.ShowLine(_baitCastPositionRef.transform, _bait.Fish.GetHookPosition());
+    }
+
     private void PullFishingRod() {
         _fishingRodPulled = true;
 
@@ -198,6 +214,7 @@ public class PlayerController : MonoBehaviour {
         } else {
             _bait.Pull();
             _fishingLine.HideLine();
+            _fishingRodAudioSource.Play();
             StartCoroutine(WaitForPullAnimation());
         }
 
@@ -205,12 +222,6 @@ public class PlayerController : MonoBehaviour {
             yield return new WaitForSeconds(1.25f);
             _isFishing = false;
         }
-    }
-
-    private void OnBaitTaken() {
-        _playerAnimator.SetBool(_baitTakenStateID, true);
-        _playerUIController.OnBaitTaken(_raycastOriginRef.transform.position);
-        _fishingLine.ShowLine(_baitCastPositionRef.transform, _bait.Fish.GetHookPosition());
     }
 
     private void PullFish() {
@@ -246,11 +257,16 @@ public class PlayerController : MonoBehaviour {
             _isFishing = false;
             _lerpFishPosition = false;
             _fishingLine.HideLine();
+            _newItemAudioSource.Play();
             Destroy(fish.gameObject);
         }
     }
 
     private void LerpFishPositionOnCatch() {
+        if(_bait.Fish == null){
+            _lerpFishPosition = false;
+            return;
+        }
         _fishCatchLerpTime += Time.deltaTime;
         Transform fishTransform = _bait.Fish.transform;
         fishTransform.position = Vector3.Lerp(_fishFirstPosition, _fishCatchPositionRef.transform.position, _fishCatchLerpTime / 0.25f);
