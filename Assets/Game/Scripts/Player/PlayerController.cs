@@ -166,7 +166,7 @@ public class PlayerController : MonoBehaviour {
                 _playerMesh.transform.forward,
                 fishingThrowPower
             );
-            _fishingLine.ShowLine(_baitCastPositionRef.transform, _bait.transform);
+            _fishingLine.ShowLine(_baitCastPositionRef.transform, _bait.GetBaitMeshTransform());
             yield return new WaitForSeconds(0.5f);
             _isCastingFishingRod = false;
             _isFishing = true;

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Bait : MonoBehaviour {
     [SerializeField] Rigidbody _rigidBody;
+    [SerializeField] GameObject _baitMesh;
 
     public Fish Fish;
 
@@ -13,9 +14,18 @@ public class Bait : MonoBehaviour {
     private OnBaitPulledDelegate _onBaitPulled;
 
     public bool IsBaitTaken = false;
-
+    private bool _contactWithWater = false;
+    private float _inWaterTime;
+    
     public void Init(OnBaitTakenDelegate onBaitTaken) {
         _onBaitTaken = onBaitTaken;
+    }
+
+    private void Update() {
+        if(_contactWithWater){
+            _inWaterTime += Time.deltaTime;
+            _baitMesh.transform.localPosition = (Vector3.up * Mathf.Sin(_inWaterTime)) + Vector3.up;
+        }
     }
 
     public void AddOnBaitPulledCallback(OnBaitPulledDelegate onBaitPulled) {
@@ -29,21 +39,32 @@ public class Bait : MonoBehaviour {
         transform.position = startPosition;
         _rigidBody.AddForce(throwForce * direction);
         IsBaitTaken = false;
+        _contactWithWater = false;
+        _inWaterTime = 0;
     }
 
     public void OnBaitTaken() {
         IsBaitTaken = true;
         gameObject.SetActive(false);
+        _contactWithWater = false;
         _onBaitTaken?.Invoke();
     }
 
     public void Pull() {
         gameObject.SetActive(false);
+        _contactWithWater = false;
         _onBaitPulled?.Invoke();
         _onBaitPulled = null;
     }
 
+    public Transform GetBaitMeshTransform(){
+        return _baitMesh.transform;
+    }
+
     private void OnCollisionEnter(Collision other) {
         _rigidBody.velocity = Vector3.zero;
+        if(other.collider.CompareTag("Water")){
+            _contactWithWater = true;
+        }
     }
 }
