@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour {
     //fishing
     private bool _isCastingFishingRod;
     private bool _castThrown;
+    private bool _fishingRodPulled;
     private bool _isFishing;
     private bool _lerpFishPosition;
     private float _fishingCastHoldTime;
@@ -64,11 +65,12 @@ public class PlayerController : MonoBehaviour {
 
         //object instance
         _bait = Instantiate<Bait>(_baitPrefabs);
-        _bait.Init(OnBaitTaken);
+        _bait.Init(OnBaitTaken, PullFishingRod);
         _bait.gameObject.SetActive(false);
 
         //fishing state
         _castThrown = false;
+        _fishingRodPulled = false;
     }
 
     private void Update() {
@@ -140,6 +142,7 @@ public class PlayerController : MonoBehaviour {
         _playerUIController.SetFishingCastingMeterValue(_fishingCastHoldTime / _fishingCastHoldTimeLimit);
         if (Input.GetButtonUp("Fire1") && !_castThrown) {
             _castThrown = true;
+            _fishingRodPulled = false;
 
             if (_fishingCastHoldTime > _fishingCastHoldTimeLimit) {
                 _fishingCastHoldTime = _fishingCastHoldTimeLimit;
@@ -174,28 +177,34 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void Fishing() {
-        if (Input.GetButtonDown("Fire1")) {
-            _playerAnimator.SetBool(_throwRodStateID, false);
-            _playerAnimator.SetBool(_baitTakenStateID, false);
-            _playerAnimator.SetBool(_pullFishStateID, true);
+        if (Input.GetButtonDown("Fire1") && !_fishingRodPulled) {
+            PullFishingRod();
+        }
+    }
 
-            _playerUIController.HideBaitIndicator();
+    private void PullFishingRod() {
+        _fishingRodPulled = true;
 
-            _playerCamera.DisableFishingCamera();
+        _playerAnimator.SetBool(_throwRodStateID, false);
+        _playerAnimator.SetBool(_baitTakenStateID, false);
+        _playerAnimator.SetBool(_pullFishStateID, true);
 
-            if (_bait.IsBaitTaken) {
-                PullFish();
-            } else {
-                _bait.Pull();
-                StartCoroutine(WaitForPullAnimation());
-            }
+        _playerUIController.HideBaitIndicator();
+
+        _playerCamera.DisableFishingCamera();
+
+        if (_bait.IsBaitTaken && _bait.Fish != null) {
+            PullFish();
+        } else {
+            _bait.Pull();
+            _fishingLine.HideLine();
+            StartCoroutine(WaitForPullAnimation());
         }
 
         IEnumerator WaitForPullAnimation() {
             yield return new WaitForSeconds(1.25f);
             _isFishing = false;
         }
-
     }
 
     private void OnBaitTaken() {

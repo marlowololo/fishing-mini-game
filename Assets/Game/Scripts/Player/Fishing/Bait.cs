@@ -10,19 +10,23 @@ public class Bait : MonoBehaviour {
 
     public delegate void OnBaitTakenDelegate();
     private OnBaitTakenDelegate _onBaitTaken;
+    public delegate void OnFishLostDelegate();
+    private OnFishLostDelegate _onFishLost;
     public delegate void OnBaitPulledDelegate();
     private OnBaitPulledDelegate _onBaitPulled;
 
     public bool IsBaitTaken = false;
     private bool _contactWithWater = false;
     private float _inWaterTime;
-    
-    public void Init(OnBaitTakenDelegate onBaitTaken) {
+    private Vector3 _throwDirection;
+
+    public void Init(OnBaitTakenDelegate onBaitTaken, OnFishLostDelegate onFishLost) {
         _onBaitTaken = onBaitTaken;
+        _onFishLost = onFishLost;
     }
 
     private void Update() {
-        if(_contactWithWater){
+        if (_contactWithWater) {
             _inWaterTime += Time.deltaTime;
             _baitMesh.transform.localPosition = (Vector3.up * Mathf.Sin(_inWaterTime)) + Vector3.up;
         }
@@ -41,6 +45,7 @@ public class Bait : MonoBehaviour {
         IsBaitTaken = false;
         _contactWithWater = false;
         _inWaterTime = 0;
+        _throwDirection = direction;
     }
 
     public void OnBaitTaken() {
@@ -50,6 +55,11 @@ public class Bait : MonoBehaviour {
         _onBaitTaken?.Invoke();
     }
 
+    public void OnFishLost(){
+        Fish = null;
+        _onFishLost?.Invoke();
+    }
+
     public void Pull() {
         gameObject.SetActive(false);
         _contactWithWater = false;
@@ -57,14 +67,18 @@ public class Bait : MonoBehaviour {
         _onBaitPulled = null;
     }
 
-    public Transform GetBaitMeshTransform(){
+    public Transform GetBaitMeshTransform() {
         return _baitMesh.transform;
     }
 
     private void OnCollisionEnter(Collision other) {
         _rigidBody.velocity = Vector3.zero;
-        if(other.collider.CompareTag("Water")){
+        if (other.collider.CompareTag("Water")) {
             _contactWithWater = true;
         }
+    }
+
+    public Vector3 GetThrowDirection() {
+        return _throwDirection;
     }
 }

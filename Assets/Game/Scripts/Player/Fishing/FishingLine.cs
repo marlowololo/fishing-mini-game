@@ -25,6 +25,8 @@ public class FishingLine : MonoBehaviour {
         _showLine = true;
         _from = from;
         _to = to;
+        _lineRenderer.SetPosition(0, _from.position);
+        _lineRenderer.SetPosition(1, _to.position);
     }
 
     public void HideLine() {
