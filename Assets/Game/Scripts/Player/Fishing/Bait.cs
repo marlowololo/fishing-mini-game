@@ -5,6 +5,8 @@ using UnityEngine;
 public class Bait : MonoBehaviour {
     [SerializeField] Rigidbody _rigidBody;
     [SerializeField] GameObject _baitMesh;
+    [SerializeField] ParticleSystem _baitInParticle;
+    [SerializeField] ParticleSystem _baitIdleParticle;
 
     public Fish Fish;
 
@@ -38,20 +40,30 @@ public class Bait : MonoBehaviour {
 
     public void CastBait(Vector3 startPosition, Vector3 direction, float throwForce) {
         _onBaitPulled = null;
+
         gameObject.SetActive(true);
         _rigidBody.velocity = Vector3.zero;
         transform.position = startPosition;
         _rigidBody.AddForce(throwForce * direction);
         IsBaitTaken = false;
+
         _contactWithWater = false;
         _inWaterTime = 0;
         _throwDirection = direction;
+
+        _baitInParticle.gameObject.SetActive(false);
+        _baitIdleParticle.gameObject.SetActive(false);
     }
 
     public void OnBaitTaken() {
         IsBaitTaken = true;
+
+        _baitInParticle.gameObject.SetActive(false);
+        _baitIdleParticle.gameObject.SetActive(false);
+
         gameObject.SetActive(false);
         _contactWithWater = false;
+
         _onBaitTaken?.Invoke();
     }
 
@@ -61,7 +73,10 @@ public class Bait : MonoBehaviour {
     }
 
     public void Pull() {
+        _baitInParticle.gameObject.SetActive(false);
+        _baitIdleParticle.gameObject.SetActive(false);
         gameObject.SetActive(false);
+        
         _contactWithWater = false;
         _onBaitPulled?.Invoke();
         _onBaitPulled = null;
@@ -75,6 +90,8 @@ public class Bait : MonoBehaviour {
         _rigidBody.velocity = Vector3.zero;
         if (other.collider.CompareTag("Water")) {
             _contactWithWater = true;
+            _baitInParticle.gameObject.SetActive(true);
+            _baitIdleParticle.gameObject.SetActive(true);
         }
     }
 

@@ -7,6 +7,7 @@ public class Fish : MonoBehaviour {
     [Header("References")]
     [SerializeField] private Animator _fishAnimator;
     [SerializeField] private Transform _fishHookPosRef;
+    [SerializeField] private ParticleSystem _fishSplashVFX;
 
     [Header("Settings")]
     [SerializeField] private float _chasingTime = 3f;
@@ -32,6 +33,7 @@ public class Fish : MonoBehaviour {
             if (_currentChaseTime >= _chasingTime) {
                 _startChasing = false;
                 _strike = true;
+                _fishSplashVFX.gameObject.SetActive(true);
                 _bait.OnBaitTaken();
                 ChangeSwimDirection();
             }
@@ -46,6 +48,7 @@ public class Fish : MonoBehaviour {
                 ChangeSwimDirection();
                 if(_swimChangeCount >= _swimChangeCountLimit){
                     _strike = false;
+                    _fishSplashVFX.gameObject.SetActive(false);
                     _bait.OnFishLost();
                 }
             }
@@ -66,6 +69,7 @@ public class Fish : MonoBehaviour {
         _targetPosition.y = _startingPosition.y;
         _startChasing = true;
         _strike = false;
+        _fishSplashVFX.gameObject.SetActive(false);
         _currentChaseTime = 0f;
         transform.LookAt(_bait.transform.position);
 
@@ -76,6 +80,7 @@ public class Fish : MonoBehaviour {
 
     public void GetCaught() {
         _fishAnimator.speed = 10;
+        _fishSplashVFX.gameObject.SetActive(false);
     }
 
     public void OnBaitPulled() {
