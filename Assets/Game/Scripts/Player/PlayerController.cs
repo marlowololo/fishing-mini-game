@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour {
     [SerializeField] private Animator _playerAnimator;
     [SerializeField] private Rigidbody _playerRigidbody;
     [SerializeField] private PlayerCameraController _playerCamera;
+    [SerializeField] private FishingLine _fishingLine;
 
 
     [Header("Locations References")]
@@ -48,7 +49,7 @@ public class PlayerController : MonoBehaviour {
     private Bait _bait;
 
     //fishing catch lerp
-    private Quaternion _fishRotation = Quaternion.Euler(0,90,0);
+    private Quaternion _fishRotation = Quaternion.Euler(0, 90, 0);
     private Vector3 _fishFirstPosition;
     private float _fishCatchLerpTime;
 
@@ -108,13 +109,12 @@ public class PlayerController : MonoBehaviour {
             Fishing();
         }
 
-        if (_lerpFishPosition){
+        if (_lerpFishPosition) {
             LerpFishPositionOnCatch();
         }
     }
 
     private void TryCastFishing() {
-        Debug.Log("CASTING WA!");
         RaycastHit raycastHit;
         if (Physics.Raycast(_raycastOriginRef.transform.position, Vector3.down, out raycastHit, 3, 1 << 4)) {
             if (raycastHit.collider.CompareTag("Water")) {
@@ -166,6 +166,7 @@ public class PlayerController : MonoBehaviour {
                 _playerMesh.transform.forward,
                 fishingThrowPower
             );
+            _fishingLine.ShowLine(_baitCastPositionRef.transform, _bait.transform);
             yield return new WaitForSeconds(0.5f);
             _isCastingFishingRod = false;
             _isFishing = true;
@@ -200,6 +201,7 @@ public class PlayerController : MonoBehaviour {
     private void OnBaitTaken() {
         _playerAnimator.SetBool(_baitTakenStateID, true);
         _playerUIController.OnBaitTaken(_raycastOriginRef.transform.position);
+        _fishingLine.ShowLine(_baitCastPositionRef.transform, _bait.Fish.GetHookPosition());
     }
 
     private void PullFish() {
@@ -212,11 +214,11 @@ public class PlayerController : MonoBehaviour {
         Rigidbody fish = _bait.Fish.GetComponent<Rigidbody>();
         Vector3 pullDirection = (transform.position - _bait.Fish.transform.position).normalized;
         fish.AddForce(Vector3.up * 350);
-        
+
         float fishDistance = Vector3.Distance(fish.transform.position, transform.position);
-        float finalForcePower =  defaultPullForce *  fishDistance / defaultFishDistance;
+        float finalForcePower = defaultPullForce * fishDistance / defaultFishDistance;
         fish.AddForce(pullDirection * finalForcePower);
-        
+
         _playerAnimator.SetBool(_catchFishID, true);
 
         StartCoroutine(CatchAnimationSequence());
@@ -234,15 +236,16 @@ public class PlayerController : MonoBehaviour {
             yield return new WaitForSeconds(1.0f);
             _isFishing = false;
             _lerpFishPosition = false;
+            _fishingLine.HideLine();
             Destroy(fish.gameObject);
         }
     }
 
-    private void LerpFishPositionOnCatch(){
+    private void LerpFishPositionOnCatch() {
         _fishCatchLerpTime += Time.deltaTime;
         Transform fishTransform = _bait.Fish.transform;
-        fishTransform.position = Vector3.Lerp(_fishFirstPosition, _fishCatchPositionRef.transform.position, _fishCatchLerpTime/0.25f);
-        fishTransform.rotation = _playerMesh.transform.rotation *  Quaternion.Lerp(fishTransform.rotation, _fishRotation, _fishCatchLerpTime/0.25f);
+        fishTransform.position = Vector3.Lerp(_fishFirstPosition, _fishCatchPositionRef.transform.position, _fishCatchLerpTime / 0.25f);
+        fishTransform.rotation = _playerMesh.transform.rotation * Quaternion.Lerp(fishTransform.rotation, _fishRotation, _fishCatchLerpTime / 0.25f);
     }
 
 }

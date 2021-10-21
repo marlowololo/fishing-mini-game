@@ -6,6 +6,7 @@ public class Fish : MonoBehaviour {
 
     [Header("References")]
     [SerializeField] private Animator _fishAnimator;
+    [SerializeField] private Transform _fishHookPosRef;
 
     [Header("Settings")]
     [SerializeField] private float _chasingTime = 3f;
@@ -39,11 +40,15 @@ public class Fish : MonoBehaviour {
         transform.LookAt(_bait.transform.position);
     }
 
-    public void GetCaught(){
+    public void GetCaught() {
         _fishAnimator.speed = 10;
     }
 
-    public void OnBaitPulled(){
+    public void OnBaitPulled() {
         Destroy(gameObject);
+    }
+
+    public Transform GetHookPosition(){
+        return _fishHookPosRef;
     }
 }

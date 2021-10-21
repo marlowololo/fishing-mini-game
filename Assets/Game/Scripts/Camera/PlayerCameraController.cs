@@ -8,7 +8,7 @@ public class PlayerCameraController : MonoBehaviour {
     [SerializeField] private GameObject _player;
 
     [Header("Settings")]
-    [SerializeField, Range(0,1)] private float _cameraSmoothness = 0.2f;
+    [SerializeField, Range(0, 1)] private float _cameraSmoothness = 0.2f;
     [SerializeField] private float _fishingCameraXOffset;
     [SerializeField] private float _fishingCameraYOffset;
 
@@ -25,7 +25,7 @@ public class PlayerCameraController : MonoBehaviour {
     }
 
     private void FixedUpdate() {
-        if(_useFishingCamera){
+        if (_useFishingCamera) {
             _fishingCameraOffset = _fishingCameraDirection * _fishingCameraXOffset;
             _fishingCameraOffset.y += _fishingCameraYOffset;
         } else {
@@ -36,12 +36,12 @@ public class PlayerCameraController : MonoBehaviour {
         transform.position = smoothedTargetPosition;
     }
 
-    public void EnabeFishingCamera(Vector3 direction){
+    public void EnabeFishingCamera(Vector3 direction) {
         _useFishingCamera = true;
         _fishingCameraDirection = direction;
     }
 
-    public void DisableFishingCamera(){
+    public void DisableFishingCamera() {
         _useFishingCamera = false;
     }
 }

@@ -8,6 +8,12 @@ public class PlayerUIController : MonoBehaviour {
     [SerializeField] private Image _fishingCastMeterFill;
     [SerializeField] private GameObject _baitTakenIndicator;
 
+    private Animation _baitTakenIndicatorAnimation;
+
+    private void Start() {
+        _baitTakenIndicatorAnimation = _baitTakenIndicator.GetComponent<Animation>();
+    }
+
     public void ShowFishingCastingMeter(Vector3 uiRefPosition) {
         Vector3 screenPosition = Camera.main.WorldToScreenPoint(uiRefPosition);
         Vector3 targetPosition = _fishingCastMeter.transform.position;
@@ -29,6 +35,7 @@ public class PlayerUIController : MonoBehaviour {
         Vector3 screenPosition = Camera.main.WorldToScreenPoint(uiRefPosition);
         _baitTakenIndicator.SetActive(true);
         _baitTakenIndicator.transform.position = screenPosition;
+        _baitTakenIndicatorAnimation.Play();
     }
 
     public void HideBaitIndicator() {
