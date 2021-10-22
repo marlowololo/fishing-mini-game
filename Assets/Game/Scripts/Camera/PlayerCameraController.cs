@@ -19,7 +19,7 @@ public class PlayerCameraController : MonoBehaviour {
     private bool _useFishingCamera;
 
     private void Start() {
-        _positionOffset = transform.position;
+        _positionOffset = transform.position - _player.transform.position;
         _fishingCameraOffset = Vector3.zero;
         _useFishingCamera = false;
     }

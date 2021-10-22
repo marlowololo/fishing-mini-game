@@ -121,7 +121,7 @@ public class PlayerController : MonoBehaviour {
 
     private void TryCastFishing() {
         RaycastHit raycastHit;
-        if (Physics.Raycast(_raycastOriginRef.transform.position, Vector3.down, out raycastHit, 3, 1 << 4)) {
+        if (Physics.Raycast(_raycastOriginRef.transform.position, Vector3.down, out raycastHit, 10, 1 << 4)) {
             if (raycastHit.collider.CompareTag("Water")) {
                 StopAllCoroutines();
 
